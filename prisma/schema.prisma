@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ContactTag {
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  name      String                @db.VarChar(30)
+  nickname  String                @db.Char(3)
+  color     String                @db.Char(7)
+  status    Boolean               @default(true)
+  contacts  Contacttocontacttag[]
+}
+
+model Contact {
+  id                Int                   @id @default(autoincrement())
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  status            Boolean               @default(true)
+  contactTag        Contacttocontacttag[]
+  WAId              String?
+  name              String?
+  shortName         String?
+  type              String?
+  pushname          String?
+  verifiedName      String?
+  isBusiness        Boolean?
+  isEnterprise      Boolean?
+  isMe              Boolean?
+  isMyContact       Boolean?
+  isPSA             Boolean?
+  isUser            Boolean?
+  isVerified        String?
+  isWAContact       String?
+  plaintextDisabled Boolean?
+  sectionHeader     String?
+  statusMute        Boolean?
+  verifiedLevel     String?
+}
+
+model Contacttocontacttag {
+  A Int
+  contact   Contact   @relation(fields: [A], references: [id])
+  B Int
+  contactTag   ContactTag   @relation(fields: [B], references: [id])
+  createdAt DateTime  @default(now())
+  @@id([A, B])
+}
+
+model Message {
+  id             Int            @id @default(autoincrement())
+  name           String         @db.VarChar(50)
+  mensageBlocks  MessageBlock[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model MessageBlock {
+  id         Int         @id @default(autoincrement())
+  index      Int
+  type       String
+  textBlock  TextBlock?
+  delayBlock DelayBlock?
+  messageId  Int
+  message    Message     @relation(fields: [messageId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model TextBlock {
+  id             Int           @id @default(autoincrement())
+  text           String        @db.Text
+  messageBlockId Int
+  messageBlock   MessageBlock  @relation(fields: [messageBlockId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model DelayBlock {
+  id             Int           @id @default(autoincrement())
+  delay          Int
+  messageBlockId Int
+  messageBlock   MessageBlock  @relation(fields: [messageBlockId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+// model User {
+//   id      Int      @id @default(autoincrement())
+//   email   String   @unique
+//   name    String?
+//   role    Role     @default(USER)
+//   posts   Post[]
+//   profile Profile?
+// }
+
+// model Profile {
+//   id     Int    @id @default(autoincrement())
+//   bio    String
+//   user   User   @relation(fields: [userId], references: [id])
+//   userId Int
+// }
+
+// model Post {
+//   id         Int        @id @default(autoincrement())
+//   createdAt  DateTime   @default(now())
+//   title      String
+//   published  Boolean    @default(false)
+//   author     User       @relation(fields: [authorId], references: [id])
+//   authorId   Int
+//   categories Category[] @relation(references: [id])
+// }
+
+// model Category {
+//   id    Int    @id @default(autoincrement())
+//   name  String
+//   posts Post[] @relation(references: [id])
+// }
+
+// enum Role {
+//   USER
+//   ADMIN
+// }
